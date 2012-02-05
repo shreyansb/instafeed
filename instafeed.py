@@ -1,6 +1,4 @@
 # quick and dirty - get a user's own pictures using the instagram API and flask
-from time import sleep
-
 from flask import Flask, make_response, request, redirect
 app = Flask(__name__)
 
@@ -42,7 +40,6 @@ def load_instas():
             break
         for r in page:
             photos.append('<img src="%s"/>' % r.images.get('low_resolution').url)
-        sleep(1)
     return ''.join(photos)
 
 @app.route("/instas/oauth_callback")
@@ -62,4 +59,4 @@ def on_callback():
     return resp
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=local_settings.port)
