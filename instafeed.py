@@ -24,7 +24,7 @@ def instas():
     else:
         return load_instas()
 
-def load_instas():
+def load_instas_old():
     access_token = request.cookies.get('instagram_access_token')
     if not access_token:
         return "hmm...where's that damn access token?"
@@ -41,6 +41,31 @@ def load_instas():
         for r in page:
             photos.append('<img src="%s"/>' % r.images.get('low_resolution').url)
     return ''.join(photos)
+
+def load_instas():
+    photos = []
+    page = get_page()
+    for r in page:
+        photos.append('<img src="%s"/>' % r.images.get('low_resolution').url)
+    photos.append('<a href="/instas">more</a>')
+    return photos
+
+def get_page():
+    """generator that returns the next page of photos
+    """
+    access_token = request.cookies.get('instagram_access_token')
+    if not access_token:
+        return redirect_to_home()
+    api = client.InstagramAPI(access_token=access_token)
+    for page, next in api.user_recent_media(as_generator=True):
+        yield page
+
+def redirect_to_home(reset_access_token=False):
+    redirect_to = redirect('/instas')
+    resp = make_response(redirect_to)
+    if reset_access_token:
+        resp.set_cookie('instagram_access_token', '')
+    return resp
 
 @app.route("/instas/oauth_callback")
 def on_callback():
