@@ -34,6 +34,7 @@ def load_instas_old():
     photos = []
     for page, next in api.user_recent_media(as_generator=True):
         print page
+        print next
         print counter
         counter = counter + 1
         if counter > max_pages: 
@@ -47,7 +48,7 @@ def load_instas():
     access_token = request.cookies.get('instagram_access_token')
     if not access_token:
         return redirect_to_home()
-    page = get_page(access_token)
+    page, next = get_page(access_token)
     for r in page:
         photos.append('<img src="%s"/>' % r.images.get('low_resolution').url)
     photos.append('<a href="/instas">more</a>')
@@ -58,7 +59,7 @@ def get_page(access_token):
     """
     api = client.InstagramAPI(access_token=access_token)
     for page, next in api.user_recent_media(as_generator=True):
-        yield page
+        yield page, next
 
 def redirect_to_home(reset_access_token=False):
     redirect_to = redirect('/instas')
