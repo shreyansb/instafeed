@@ -3,7 +3,7 @@ import local_settings
 from instagram import client
 access_token = local_settings.asha_access_token
 api = client.InstagramAPI(access_token=access_token)
-pages = api.user_recent_media(as_generator=True, return_raw_responses=True, max_pages=1000)
+pages = api.user_recent_media(as_generator=True, return_json=True, max_pages=1000)
 
 raw_responses = []
 while True:
