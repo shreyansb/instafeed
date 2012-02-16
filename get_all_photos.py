@@ -3,7 +3,7 @@ import local_settings
 from instagram import client
 access_token = local_settings.asha_access_token
 api = client.InstagramAPI(access_token=access_token)
-pages = api.user_recent_media(as_generator=True, max_pages=1000)
+pages = api.user_recent_media(as_generator=True, return_raw_responses=True, max_pages=1000)
 
 raw_responses = []
 while True:
@@ -11,7 +11,7 @@ while True:
         page = pages.next()
     except StopIteration:
         break
-    raw_response = page[1]
+    raw_response = page[0]
     print "got %d pictures" % len(raw_response)
     raw_responses.extend(raw_response)
 
